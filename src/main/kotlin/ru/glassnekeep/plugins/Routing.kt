@@ -4,18 +4,46 @@ import ru.glassnekeep.controllers.ExpressionController
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.html.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.css.*
 import kotlinx.html.*
+
+suspend inline fun ApplicationCall.respondCss(builder: CssBuilder.() -> Unit) {
+    this.respondText(CssBuilder().apply(builder).toString(), ContentType.Text.CSS)
+}
 
 fun Application.configureRouting() {
     val expController = ExpressionController(this)
     routing {
+        get("/styles.css") {
+            call.respondCss {
+                body {
+                }
+                rule("#expr_input") {
+                    width = 300.px
+                    height = 400.px
+                    textAlign = TextAlign.initial
+                }
+                rule("#info") {
+                    display = Display.block
+                    boxSizing = BoxSizing.borderBox
+                }
+                rule("input") {
+                    display = Display.block
+                    width = 200.px
+                    height = 30.px
+                    boxSizing = BoxSizing.borderBox
+                }
+            }
+        }
         get("/") {
             call.respondHtml(HttpStatusCode.OK) {
                 head {
                     title {
                         + "Expressions"
                     }
+                    link(rel = "stylesheet", href = "/styles.css", type = "text/css")
                     script {
                         "const form = document.querySelector(\"#userinfo\");\n" +
                                 "async function sendData() {\n" +
@@ -43,6 +71,7 @@ fun Application.configureRouting() {
                                 htmlFor = "entry"
                             }
                             input(type = InputType.text, name = "entry") {
+                                id = "expr_input"
                                 required = true
                             }
                             input(type = InputType.submit) {
@@ -57,11 +86,7 @@ fun Application.configureRouting() {
             val result = expController.handleExpression(call)
             call.respondHtml(HttpStatusCode.OK) {
                 head {
-                    style("text/css") {
-                        unsafe {
 
-                        }
-                    }
                 }
                 body {
                     h1 {
