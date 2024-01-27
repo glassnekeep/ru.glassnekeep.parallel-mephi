@@ -5,7 +5,9 @@ fun String.parseExpression(): String {
 }
 
 sealed interface ParsingStrategy {
-    fun parse(expr: String): String
+    fun parse(expr: String): String {
+        return expr.replace("Expression", "Expression(CoroutinesConfig.build{})")
+    }
 
     fun fit(expr: String): Boolean
 
@@ -19,13 +21,17 @@ sealed interface ParsingStrategy {
 }
 
 private object SingleValueStrategy : ParsingStrategy {
-    override fun parse(expr: String) = expr
+
+    override fun parse(expr: String): String {
+        return super.parse(expr)
+            .replace("[", "")
+            .replace("]", "")
+    }
 
     override fun fit(expr: String) = expr.contains("Value\\(\\d+\\)".toRegex())
 }
 
 private object MultipleValuesStrategy : ParsingStrategy {
-    override fun parse(expr: String) = expr
 
     override fun fit(expr: String) = expr.contains("Value\\(\\d+,".toRegex())
 }
@@ -33,7 +39,7 @@ private object MultipleValuesStrategy : ParsingStrategy {
 private object ParseValueListStrategy : ParsingStrategy {
     override fun parse(expr: String): String {
         return expr
-            .replace("Expression", "ExpressionList(config)")
+            .replace("Expression", "ExpressionList(CoroutinesConfig.build {})")
             .replace("[", "listOf(")
             .replace("]", ")")
     }
