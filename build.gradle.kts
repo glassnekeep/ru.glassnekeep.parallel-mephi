@@ -41,9 +41,15 @@ dependencies {
     // Parsing
     implementation(kotlin("reflect"))
     implementation(kotlin("script-runtime"))
-    implementation(kotlin("compiler-embeddable"))
-    implementation(kotlin("script-util"))
-    implementation(kotlin("scripting-compiler-embeddable"))
+//    implementation(kotlin("compiler-embeddable"))
+//    implementation(kotlin("script-util"))
+//    implementation(kotlin("scripting-compiler-embeddable"))
+    implementation("org.jetbrains.kotlin:kotlin-script-util:1.2.71")
+    implementation("org.jetbrains.kotlin:kotlin-script-runtime:1.2.71")
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.2.71")
+
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-scripting-jsr223
+    runtimeOnly("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.4.10")
 
     // Ktor client
     implementation("io.ktor:ktor-client-core:$ktor_version")

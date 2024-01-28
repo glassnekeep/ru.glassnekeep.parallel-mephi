@@ -16,7 +16,7 @@ fun Application.module() {
     UIHolder(this).run()
 //    runBlocking {
 //        val config = CoroutinesConfig.build {  }
-//        val res = Expression(config).Value(3).If { x -> x < 4 }.Then { x -> x + 2 }.Else { x -> x - 3 }.processElement().single()
+//        val res = Expression.Value(3).If { x -> x < 4 }.Then { x -> x + 2 }.Else { x -> x - 3 }.processElement().single()
 //        log.info("result = $res")
 //    }
 }
