@@ -5,6 +5,9 @@ import io.ktor.server.request.*
 import io.ktor.server.util.*
 import kotlinx.html.*
 import org.jetbrains.kotlin.cli.common.environment.setIdeaIoUseFallback
+import ru.glassnekeep.dsl.core.expressions.Expression
+import ru.glassnekeep.parallel.CoroutinesConfig
+import ru.glassnekeep.dsl.core.*
 import javax.script.ScriptEngineManager
 
 class ExpressionController(application: Application) : Controller(application) {
@@ -35,10 +38,12 @@ class ExpressionController(application: Application) : Controller(application) {
         count++
         val startTime = currentTimeMillis()
         val res = with(ScriptEngineManager().getEngineByExtension("kts")) {
-            eval(expression).toString()
+            val final = "import ru.glassnekeep.dsl.core.expressions.Expression\n" +
+                    "import ru.glassnekeep.parallel.CoroutinesConfig\n" + expression
+            eval(final).toString()
             //eval("2 + 3").toString()
         }
-        //Expression(CoroutinesConfig.build {  }).Value(3).If { x -> x < 4 }.Then { x -> x + 2 }.Else { x -> x - 3 }.processElement()
+        //Expression.Value(3).If { x -> x < 4 }.Then { x -> x + 2 }.Else { x -> x - 3 }.processElement()
         val endTime = currentTimeMillis()
         logInfo("For request #$count: time = ${endTime - startTime}")
 
