@@ -42,9 +42,9 @@ abstract class ListElement(
 
     fun Fold(init: Int, block: (Int, Int) -> Int) = initTag(FoldTag(init, block, this, config))
 
-    fun Zip() = ZipTag(this, config)
+    fun Zip() = initTag(ZipTag(this, config))
 
-    fun Unzip() = UnzipTag(this, config)
+    fun Unzip() = initTag(UnzipTag(this, config))
 
     protected companion object {
         val DEFAULT_COROUTINE_SCOPE = CoroutineScope(Dispatchers.IO)

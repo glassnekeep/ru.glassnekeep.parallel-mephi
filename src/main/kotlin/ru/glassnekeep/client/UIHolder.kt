@@ -3,8 +3,10 @@ package ru.glassnekeep.client
 import io.ktor.server.application.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.glassnekeep.controllers.ExpressionController
+import ru.glassnekeep.controllers.parseExpression
 import java.util.*
 
 class UIHolder(application: Application) {
@@ -16,8 +18,8 @@ class UIHolder(application: Application) {
             log.info("Enter expression below:")
             val text = scanner.nextLine()
             scope.launch {
-                //log.info(client.sendExpression(text).toString())
-                log.info(controller.handleString(text))
+                delay(5000)
+                log.info(controller.handleExpression(text.parseExpression()))
             }
         }
     }

@@ -3,7 +3,13 @@ package ru.glassnekeep
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.kotlin.com.google.common.math.IntMath.pow
 import ru.glassnekeep.client.UIHolder
+import ru.glassnekeep.dsl.core.expressions.Expression
+import ru.glassnekeep.dsl.core.expressions.ExpressionList
+import ru.glassnekeep.dsl.lists.values.ValuesList
+import ru.glassnekeep.parallel.CoroutinesConfig
 import ru.glassnekeep.plugins.configureRouting
 
 fun main() {
@@ -14,9 +20,4 @@ fun main() {
 fun Application.module() {
     configureRouting()
     UIHolder(this).run()
-//    runBlocking {
-//        val config = CoroutinesConfig.build {  }
-//        val res = Expression.Value(3).If { x -> x < 4 }.Then { x -> x + 2 }.Else { x -> x - 3 }.processElement().single()
-//        log.info("result = $res")
-//    }
 }

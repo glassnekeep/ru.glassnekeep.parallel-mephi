@@ -1,7 +1,7 @@
 package ru.glassnekeep.parallel
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
+import java.util.concurrent.Executors
 
 class CoroutinesConfig private constructor(
     var default: CoroutineDispatcher = Dispatchers.Default,
@@ -20,6 +20,18 @@ class CoroutinesConfig private constructor(
 ) {
 
     companion object {
+        val scope = CoroutineScope(Dispatchers.IO)
+        val myDispatcher = Executors.newFixedThreadPool(10).asCoroutineDispatcher()
+        val DEFAULT = build {
+//            every = myDispatcher
+//            project = myDispatcher
+//            all = myDispatcher
+//            any = myDispatcher
+//            map = myDispatcher
+//            flatMap = myDispatcher
+//            fold = myDispatcher
+//            rec = myDispatcher
+        }
         fun build(block: CoroutinesConfig.() -> Unit) = CoroutinesConfig().apply(block)
     }
 }

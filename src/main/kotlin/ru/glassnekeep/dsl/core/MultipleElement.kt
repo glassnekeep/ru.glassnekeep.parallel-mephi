@@ -31,5 +31,5 @@ abstract class MultipleElement(
 
     fun Project(vararg values: (Int) -> Int?) = initTag(ProjectTag(values, this, config))
 
-    fun JoinValues(values: IntArray) = initTag(JoinTag(values, this, config))
+    fun JoinValues(vararg values: Int) = initTag(JoinTag(values, this, config))
 }

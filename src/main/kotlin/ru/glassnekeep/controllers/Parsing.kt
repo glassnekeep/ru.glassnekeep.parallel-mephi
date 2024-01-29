@@ -6,7 +6,9 @@ fun String.parseExpression(): String {
 
 sealed interface ParsingStrategy {
     fun parse(expr: String): String {
-        return expr.replace("Expression", "Expression(CoroutinesConfig.build{})")
+        return "CoroutinesConfig.scope.async {\n" +
+                expr.replace("Expression", "Expression(CoroutinesConfig.DEFAULT)") +
+                "\n}"
     }
 
     fun fit(expr: String): Boolean
@@ -38,10 +40,13 @@ private object MultipleValuesStrategy : ParsingStrategy {
 
 private object ParseValueListStrategy : ParsingStrategy {
     override fun parse(expr: String): String {
-        return expr
-            .replace("Expression", "ExpressionList(CoroutinesConfig.build {})")
+        return "CoroutinesConfig.scope.async {\n" + expr
+            .replace("Expression", "ExpressionList(CoroutinesConfig.DEFAULT)")
+            .replace("Value(", "Value(ValueList(")
+            .replace("])", ")))")
             .replace("[", "listOf(")
-            .replace("]", ")")
+            .replace("]", ")") +
+        "\n}"
     }
 
     override fun fit(expr: String) = expr.startsWith("Expression.Value([")

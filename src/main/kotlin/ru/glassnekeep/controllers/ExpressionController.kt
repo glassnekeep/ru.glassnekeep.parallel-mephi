@@ -3,11 +3,12 @@ package ru.glassnekeep.controllers
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.util.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.html.*
 import org.jetbrains.kotlin.cli.common.environment.setIdeaIoUseFallback
 import ru.glassnekeep.dsl.core.expressions.Expression
 import ru.glassnekeep.parallel.CoroutinesConfig
-import ru.glassnekeep.dsl.core.*
 import javax.script.ScriptEngineManager
 
 class ExpressionController(application: Application) : Controller(application) {
@@ -34,19 +35,33 @@ class ExpressionController(application: Application) : Controller(application) {
         return res
     }
 
-    suspend fun handleString(expression: String) : String {
+    suspend fun handleExpression(expression: String) : String {
         count++
         val startTime = currentTimeMillis()
+        logInfo("For request #$count: startTime = $startTime")
         val res = with(ScriptEngineManager().getEngineByExtension("kts")) {
-            val final = "import ru.glassnekeep.dsl.core.expressions.Expression\n" +
-                    "import ru.glassnekeep.parallel.CoroutinesConfig\n" + expression
-            eval(final).toString()
-            //eval("2 + 3").toString()
-        }
-        //Expression.Value(3).If { x -> x < 4 }.Then { x -> x + 2 }.Else { x -> x - 3 }.processElement()
+            val final = imports + "\n" + expression
+            eval(final)
+        } as Deferred<*>
+        val result = res.await()
         val endTime = currentTimeMillis()
         logInfo("For request #$count: time = ${endTime - startTime}")
+        return result
+            .toString()
+            .replace("[", "")
+            .replace("]", "")
+    }
 
-        return res
+    private companion object {
+        const val EXPRESSION = "import ru.glassnekeep.dsl.core.expressions.Expression"
+        const val EXPRESSION_LIST = "import ru.glassnekeep.dsl.core.expressions.ExpressionList"
+        const val COROUTINES_CONFIG = "import ru.glassnekeep.parallel.CoroutinesConfig"
+        const val ASYNC = "import kotlinx.coroutines.async"
+        const val POW = "import org.jetbrains.kotlin.com.google.common.math.IntMath.pow"
+        const val VALUE_LIST = "import ru.glassnekeep.dsl.lists.values.ValuesList"
+        const val LIST = "import ru.glassnekeep.dsl.lists.values.ValueList"
+
+        val imports = listOf(EXPRESSION, EXPRESSION_LIST, COROUTINES_CONFIG, ASYNC, POW, VALUE_LIST, LIST)
+            .joinToString(separator = "\n")
     }
 }
